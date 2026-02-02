@@ -1,11 +1,18 @@
 #lib
 from flask import Flask, render_template, request
 import os
+import model
+
+import config
+from db import init_db
 
 Template_Folder = os.path.join(os.getcwd(), "./html") 
 
 
 app = Flask(__name__, template_folder=Template_Folder)
+app.config.from_object(config)
+
+init_db(app)
 
 @app.route('/')
 def home():
