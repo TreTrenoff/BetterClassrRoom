@@ -1,6 +1,11 @@
+#lib
 from flask import Flask, render_template, request
+import os
 
-app = Flask(__name__)
+Template_Folder = os.path.join(os.getcwd(), "./html") 
+
+
+app = Flask(__name__, template_folder=Template_Folder)
 
 @app.route('/')
 def home():
@@ -9,11 +14,14 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html')
-    
+
 @app.route('/submit', methods=['POST'])
 def submit():
     data = request.form.get('data')
     return render_template('result.html', data=data)
 
+
+
+#--------- RUN --------
 if __name__ == '__main__':
     app.run(debug=True)
