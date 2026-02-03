@@ -1,8 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-def init_db(app):
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "BetterClassRoom.sqlite3"),
+    }
+}

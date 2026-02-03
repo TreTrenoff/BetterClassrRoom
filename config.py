@@ -1,20 +1,21 @@
-"""
-Configuration file for BetterClassRoom application
-"""
+import os
+from django.conf import settings
+from db import DATABASES
 
-# Database configuration
-SQLALCHEMY_DATABASE_URI = "sqlite:///betterclassroom.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# App settings
-DEBUG = True
-SECRET_KEY = "your-secret-key-here"
-PORT = 5000
-HOST = "localhost"
-
-# Login configuration
-LOG_LEVEL = "INFO"
-LOG_FILE = "betterclassroom.log"
-
-# Other settings
-MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
-TIMEOUT = 30
+if not settings.configured:
+    settings.configure(
+        DEBUG=True,
+        SECRET_KEY="dev-key",
+        ROOT_URLCONF="urls",
+        ALLOWED_HOSTS=["*"],
+        MIDDLEWARE=[],
+        DATABASES=DATABASES,
+        TEMPLATES=[
+            {
+                "BACKEND": "django.template.backends.django.DjangoTemplates",
+                "DIRS": [BASE_DIR],
+            }
+        ],
+    )
