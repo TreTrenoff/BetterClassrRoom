@@ -2,9 +2,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class User(AbstractUser):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(unique=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
+    password = models.CharField(max_length=128)
+    is_active = models.BooleanField(default=True)
+    
     groups = models.ManyToManyField(
         Group,
         related_name='db_users',
