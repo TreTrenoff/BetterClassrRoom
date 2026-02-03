@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-from db import DATABASES
+from db.db import DATABASES
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -9,7 +9,13 @@ if not settings.configured:
         DEBUG=True,
         SECRET_KEY="dev-key",
         ROOT_URLCONF="urls",
+        AUTH_USER_MODEL='db.User',
         ALLOWED_HOSTS=["*"],
+        INSTALLED_APPS=[
+            'django.contrib.auth',
+            'django.contrib.contenttypes',
+            'db',
+        ],
         MIDDLEWARE=[],
         DATABASES=DATABASES,
         TEMPLATES=[
