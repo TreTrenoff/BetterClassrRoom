@@ -8,8 +8,12 @@ def login(request):
     return render(request, "login.html")
 
 
+def register(request):
+    return render(request, "register.html")
+
 
 urlpatterns = [
     path("", index),
-    path("/login", login),
+    path("login", login),
+    path("register", register),
 ]
