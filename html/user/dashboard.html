@@ -1,18 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
-
 {% block content %}
-{% load static %}
-<h2>Bienvenue sur votre dashboard, {{ user.username }}!</h2>
-<p>Voici les informations de votre compte :</p>
-<ul>
-    <li>Nom d'utilisateur : {{ user.username }}</li>
-    <li>Nom de famille : {{ user.first_name }}</li>
-    <li>Prénom : {{ user.last_name }}</li>
-    <li>Email : {{ user.email }}</li>
-    <li>Date d'inscription : {{ user.date_joined }}</li>
-    <li>Avatar : <img src="{% static user.profile.avatar_url %}" alt="Avatar de l'utilisateur" width="50" height="50"></li>
-    <li>Bio : {{ user.profile.bio }}</li>
-    <li>Rôle : {{ user.profile.role }}</li>
-</ul>
+
+<h2>Mon profil</h2>
+
+<img src="{{ user.profile.avatar_url }}" width="80">
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+    <button type="submit" name="save_profile">Sauvegarder</button>
+</form>
+
+<hr>
+
+<h3 style="color:red">Zone dangereuse</h3>
+
+<form method="post">
+    {% csrf_token %}
+    {{ delete_form.as_p }}
+    <button type="submit" name="delete_account">
+        Supprimer mon compte
+    </button>
+</form>
+
+
 {% endblock %}

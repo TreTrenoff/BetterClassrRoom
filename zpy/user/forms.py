@@ -61,3 +61,41 @@ class LoginForm(forms.Form):
 
     def get_user(self):
         return self.user
+
+
+# ==============================
+# UPDATE USER (pré-rempli auto)
+# ==============================
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email"]
+
+
+# ==============================
+# UPDATE PROFILE (pré-rempli auto)
+# ==============================
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ["bio", "avatar"]
+
+# -------------------------------------------------
+# SUPPRESSION COMPTE (avec mot de passe)
+# -------------------------------------------------
+class DeleteAccountForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput, label="Confirmer mot de passe")
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_password(self):
+        pwd = self.cleaned_data["password"]
+
+        if not authenticate(username=self.user.username, password=pwd):
+            raise forms.ValidationError("Mot de passe incorrect.")
+
+        return pwd

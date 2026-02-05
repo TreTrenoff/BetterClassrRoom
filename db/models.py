@@ -1,4 +1,5 @@
 # db/models.py
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -31,8 +32,9 @@ class Profile(models.Model):
     @property
     def avatar_url(self):
         if self.avatar:
-            return self.avatar.url  # URL du fichier uploadé
-        return "default_avatar.png"  # fallback
+            return self.avatar # /media/avatars/xxx.png
+
+        return settings.STATIC_URL + "default_avatar.png"
 
     # Propriétés pratiques
     @property

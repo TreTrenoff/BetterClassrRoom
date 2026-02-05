@@ -14,4 +14,5 @@ urlpatterns = [
     path("register", register_view, name="register"),
     path("logout", logout_view, name="logout"),
     path("dashboard", dashboard, name="dashboard"),
+
 ]
