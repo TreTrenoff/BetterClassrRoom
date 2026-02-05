@@ -28,6 +28,12 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
+    @property
+    def avatar_url(self):
+        if self.avatar:
+            return self.avatar.url  # URL du fichier uploadé
+        return "default_avatar.png"  # fallback
+
     # Propriétés pratiques
     @property
     def is_teacher(self):

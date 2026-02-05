@@ -2,5 +2,12 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-
+{% load static %}
+<h2>Bienvenue sur votre dashboard, {{ user.username }}!</h2>
+<p>Voici les informations de votre compte :</p>
+<ul>
+    <li>Email : {{ user.email }}</li>
+    <li>Date d'inscription : {{ user.date_joined }}</li>
+    <li>Avatar : <img src="{% static user.profile.avatar_url %}" alt="Avatar de l'utilisateur" width="50" height="50"></li>
+</ul>
 {% endblock %}
