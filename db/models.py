@@ -7,18 +7,12 @@ from django.contrib.auth.models import AbstractUser
 # =========================
 
 class User(AbstractUser):
-    """
-    Étend le système d'auth Django.
-    Le password reste hashé automatiquement par Django.
-    """
-    name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True)  # OK si tu veux login par email
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
 
     def __str__(self):
         return self.username
-
 
 # =========================
 # Course
