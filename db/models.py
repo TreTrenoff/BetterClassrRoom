@@ -1,48 +1,34 @@
+# db/models.py
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # =========================================================
-# USER
+# PROFILE
 # =========================================================
-
-class User(AbstractUser):
+class Profile(models.Model):
     """
-    Utilisateur étendu basé sur AbstractUser.
-
-    Django gère déjà :
-    - username
-    - password hashé
-    - permissions
-    - groups
-    - sessions
-
-    On ajoute uniquement les champs métier spécifiques.
+    Profile étendu pour un utilisateur standard.
+    Contient les champs métier spécifiques :
+    - role
+    - bio
+    - avatar
     """
 
     class Role(models.TextChoices):
         STUDENT = "student", "Student"
         TEACHER = "teacher", "Teacher"
-        ADMIN = "admin", "Admin"
 
-    # Email unique → permet login par email si besoin
-    email = models.EmailField(unique=True)
-
-    # Infos profil
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.STUDENT)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
 
-    # Rôle métier simple (plus léger que Groups pour 90% des cas)
-    role = models.CharField(
-        max_length=20,
-        choices=Role.choices,
-        default=Role.STUDENT
-    )
-
     def __str__(self):
-        return self.username
+        return f"{self.user.username} - {self.role}"
 
-    # Helpers ergonomiques (lisibilité du code métier)
+    # Propriétés pratiques
     @property
     def is_teacher(self):
         return self.role == self.Role.TEACHER
@@ -59,22 +45,14 @@ class User(AbstractUser):
 # =========================================================
 # COURSE
 # =========================================================
-
 class Course(models.Model):
     """
-    Représente un cours créé par un enseignant.
+    Cours créé par un enseignant.
     """
 
     title = models.CharField(max_length=200)
     description = models.TextField()
-
-    # Propriétaire du cours
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="courses_created"
-    )
-
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="courses_created")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -84,37 +62,36 @@ class Course(models.Model):
 # =========================================================
 # RANK / SCORE
 # =========================================================
-
 class Rank(models.Model):
     """
     Score d'un utilisateur pour un cours.
     Un utilisateur ne peut avoir qu'un seul score par cours.
     """
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="scores"
-    )
-
-    course = models.ForeignKey(
-        Course,
-        on_delete=models.CASCADE,
-        related_name="scores"
-    )
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="scores")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="scores")
     score = models.IntegerField()
     comment = models.TextField(blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["user", "course"],
-                name="unique_user_course_rank"
-            )
+            models.UniqueConstraint(fields=["user", "course"], name="unique_user_course_rank")
         ]
 
     def __str__(self):
         return f"{self.user.username} - {self.course.title}: {self.score}"
+
+
+# =========================================================
+# SIGNAL POUR CRÉER LE PROFILE AUTOMATIQUEMENT
+# =========================================================
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    """
+    Crée automatiquement un Profile à la création d'un User.
+    """
+    if created:
+        Profile.objects.create(user=instance)
+    else:
+        instance.profile.save()

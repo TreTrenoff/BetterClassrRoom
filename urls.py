@@ -1,29 +1,17 @@
 from django.urls import path
-from django.shortcuts import redirect, render
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render
+from zpy.user.url_user import dashboard, login_view, register_view, logout_view
 
 
 def index(request):
     return render(request, "index.html")
 
-def login(request):
-    return render(request, "login.html")
 
-
-def register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()   # password hashé automatiquement
-            login(request, user) # auto login après inscription
-            return redirect("/")
-    else:
-        form = UserCreationForm()
-
-    return render(request, "registration/register.html", {"form": form})
 
 urlpatterns = [
-    path("", index),
-    path("login", login),
-    path("register", register),
+    path("", index, name="home"),
+    path("login", login_view, name="login"),
+    path("register", register_view, name="register"),
+    path("logout", logout_view, name="logout"),
+    path("dashboard", dashboard, name="dashboard"),
 ]
