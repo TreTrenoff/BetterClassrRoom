@@ -11,7 +11,6 @@ class RegisterForm(UserCreationForm):
     last_name = forms.CharField(label="Nom", max_length=150)
     email = forms.EmailField()
     bio = forms.CharField(widget=forms.Textarea, required=False)
-    role = forms.ChoiceField(label="Rôle", choices=Profile.Role.choices)
     avatar = forms.ImageField(required=False)
 
     class Meta:

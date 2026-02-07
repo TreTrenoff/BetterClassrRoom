@@ -16,15 +16,15 @@ class Profile(models.Model):
     - bio
     - avatar
     """
-
-    class Role(models.TextChoices):
-        STUDENT = "student", "Student"
-        TEACHER = "teacher", "Teacher"
+    class RoleRequestStatus(models.TextChoices):
+        PENDING = "pending", "En attente"
+        APPROVED = "approved", "Approuvé"
+        REJECTED = "rejected", "Refusé"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    role = models.CharField(max_length=20, choices=Role.choices, default=Role.STUDENT)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
@@ -57,7 +57,6 @@ class Course(models.Model):
     """
     Cours créé par un enseignant.
     """
-
     title = models.CharField(max_length=200)
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="courses_created")
@@ -65,6 +64,28 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Chapter(models.Model):
+    """
+    Chapitre d'un cours, correspondant à une page HTML.
+    """
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
+    title = models.CharField(max_length=200)
+    content = models.TextField(blank=True)  # Optionnel si on utilise un fichier HTML externe
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
+
+    def get_html_path(self):
+        """
+        Retourne le chemin du fichier HTML si défini.
+        """
+        if self.html_file:
+            return self.html_file.url
+        return None
 
 
 # =========================================================

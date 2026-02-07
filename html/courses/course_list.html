@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Mes Cours</h2>
+<a href="{% url 'course_create' %}">Créer un nouveau cours</a>
+<ul>
+    {% for course in courses %}
+        <li>
+            {{ course.title }} - {{ course.description }} 
+            <a href="{% url 'chapter_create' course.id %}">Ajouter un chapitre</a>
+            <ul>
+                {% for chapter in course.chapters.all %}
+                    <li>{{ chapter.title }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% empty %}
+        <li>Aucun cours trouvé.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-from db.db import DATABASES  # Configuration de ta base de données
+from db.db import DATABASES, DbConfig  # Configuration de ta base de données
 
 # -------------------------------------------------------------------
 # Répertoire de base du projet
@@ -31,7 +31,7 @@ if not settings.configured:
             "django.contrib.sessions",       # Sessions et cookies
             "django.contrib.messages",       # Messages flash
             "django.contrib.staticfiles",    # Fichiers statiques
-            "db",                            # Ton application perso
+            "db.db.DbConfig",                            # App contenant les models/migrations
         ],
 
         # ---- Middleware ----

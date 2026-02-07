@@ -2,13 +2,20 @@ from django.shortcuts import render, redirect
 from zpy.user.forms import LoginForm, ProfileUpdateForm, RegisterForm, DeleteAccountForm, UserUpdateForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST, request.FILES)
 
         if form.is_valid():
+            
             user = form.save()
+                        # ---- Attribution du rôle par défaut ----
+            group_name = "Student"
+            group, _ = Group.objects.get_or_create(name=group_name)
+            user.groups.add(group)
+
             login(request, user)
             return redirect("/")
 

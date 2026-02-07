@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h2>Gestion des Groupes & Permissions</h2>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- ======================= GROUPES ====================== -->
+<!-- ===================================================== -->
+
+<section>
+
+    <h3>Groupes existants</h3>
+
+    <table border="1" cellpadding="6" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Permissions</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for group in groups %}
+            <tr>
+                <td><b>{{ group.name }}</b></td>
+
+                <td>
+                    {% for perm in group.permissions.all %}
+                        {{ perm.codename }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        —
+                    {% endfor %}
+                </td>
+
+                <td>
+
+                    <!-- EDIT (GET) -->
+                    <a href="?edit_group={{ group.id }}">Modifier</a>
+
+                    &nbsp;|&nbsp;
+
+                    <!-- DELETE (POST) -->
+                    <form method="post" style="display:inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="group_id" value="{{ group.id }}">
+                        <button type="submit" name="delete_group" style="color:red;">
+                            Supprimer
+                        </button>
+                    </form>
+
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Aucun groupe trouvé.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <!-- ======================== -->
+    <!-- FORM GROUPE -->
+    <!-- ======================== -->
+
+    <fieldset style="margin-top:25px; padding:15px;">
+        <legend>
+            {% if edit_group_id %}
+                ✏️ Modifier le groupe
+            {% else %}
+                ➕ Créer un groupe
+            {% endif %}
+        </legend>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if edit_group_id %}
+                <input type="hidden" name="group_id" value="{{ edit_group_id }}">
+            {% endif %}
+
+            <p>
+                {{ group_form.name.label_tag }}<br>
+                {{ group_form.name }}
+            </p>
+
+            <p>
+                {{ group_form.permissions.label_tag }}<br>
+                {{ group_form.permissions }}
+            </p>
+
+            <button type="submit" name="save_group">
+                {% if edit_group_id %}
+                    Mettre à jour
+                {% else %}
+                    Créer
+                {% endif %}
+            </button>
+
+            {% if edit_group_id %}
+                <a href="{% url 'admin_manage_roles_permissions' %}">
+                    Annuler
+                </a>
+            {% endif %}
+        </form>
+    </fieldset>
+
+</section>
+
+
+<hr style="margin:40px 0;">
+
+
+<!-- ===================================================== -->
+<!-- ==================== PERMISSIONS ===================== -->
+<!-- ===================================================== -->
+
+<section>
+
+    <h3>Permissions existantes</h3>
+
+    <table border="1" cellpadding="6" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Codename</th>
+                <th>Content Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for perm in permissions %}
+            <tr>
+                <td>{{ perm.name }}</td>
+                <td><code>{{ perm.codename }}</code></td>
+                <td>{{ perm.content_type }}</td>
+
+                <td>
+
+                    <!-- EDIT (GET) -->
+                    <a href="?edit_perm={{ perm.id }}">Modifier</a>
+
+                    &nbsp;|&nbsp;
+
+                    <!-- DELETE -->
+                    <form method="post" style="display:inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="perm_id" value="{{ perm.id }}">
+                        <button type="submit" name="delete_permission" style="color:red;">
+                            Supprimer
+                        </button>
+                    </form>
+
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Aucune permission trouvée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <!-- ======================== -->
+    <!-- FORM PERMISSION -->
+    <!-- ======================== -->
+
+    <fieldset style="margin-top:25px; padding:15px;">
+        <legend>
+            {% if edit_perm_id %}
+                ✏️ Modifier la permission
+            {% else %}
+                ➕ Créer une permission
+            {% endif %}
+        </legend>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if edit_perm_id %}
+                <input type="hidden" name="perm_id" value="{{ edit_perm_id }}">
+            {% endif %}
+
+            <p>
+                {{ permission_form.name.label_tag }}<br>
+                {{ permission_form.name }}
+            </p>
+
+            <p>
+                {{ permission_form.codename.label_tag }}<br>
+                {{ permission_form.codename }}
+            </p>
+
+            <p>
+                {{ permission_form.content_type.label_tag }}<br>
+                {{ permission_form.content_type }}
+            </p>
+
+            <button type="submit" name="save_permission">
+                {% if edit_perm_id %}
+                    Mettre à jour
+                {% else %}
+                    Créer
+                {% endif %}
+            </button>
+
+            {% if edit_perm_id %}
+                <a href="{% url 'admin_manage_roles_permissions' %}">
+                    Annuler
+                </a>
+            {% endif %}
+        </form>
+    </fieldset>
+
+</section>
+
+{% endblock %}

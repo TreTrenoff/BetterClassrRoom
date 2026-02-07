@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<h2>Admin Dashboard</h2>
+<p>Centre de contrôle de la plateforme</p>
+
+<!-- ================================================= -->
+<!-- NAVIGATION -->
+<!-- ================================================= -->
+
+<nav style="margin-bottom:25px;">
+    <a href="{% url 'admin_manage_roles_permissions' %}">
+        🔐 Gérer rôles & permissions
+    </a>
+</nav>
+
+
+<!-- ================================================= -->
+<!-- USERS -->
+<!-- ================================================= -->
+
+<h3>Utilisateurs</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <tr>
+        <td>Total</td>
+        <td><b>{{ total_users }}</b></td>
+    </tr>
+    <tr>
+        <td>Actifs</td>
+        <td>{{ active_users }}</td>
+    </tr>
+    <tr>
+        <td>Staff</td>
+        <td>{{ staff_users }}</td>
+    </tr>
+    <tr>
+        <td>Superusers</td>
+        <td>{{ superusers }}</td>
+    </tr>
+    <tr>
+        <td>Nouveaux aujourd’hui</td>
+        <td>{{ new_today }}</td>
+    </tr>
+    <tr>
+        <td>Dernières 24h</td>
+        <td>{{ new_24h }}</td>
+    </tr>
+</table>
+
+
+<h4 style="margin-top:20px;">Derniers inscrits</h4>
+
+<table border="1" cellpadding="6" cellspacing="0" width="100%">
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Date</th>
+    </tr>
+
+    {% for u in latest_users %}
+    <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.date_joined }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+<hr style="margin:40px 0;">
+
+
+<!-- ================================================= -->
+<!-- AUTH -->
+<!-- ================================================= -->
+
+<h3>Sécurité / Rôles</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <tr>
+        <td>Groupes</td>
+        <td>{{ total_groups }}</td>
+    </tr>
+    <tr>
+        <td>Permissions</td>
+        <td>{{ total_permissions }}</td>
+    </tr>
+</table>
+
+
+<hr style="margin:40px 0;">
+
+
+<!-- ================================================= -->
+<!-- PLATFORM DATA -->
+<!-- ================================================= -->
+
+<h3>Contenu pédagogique</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <tr>
+        <td>Cours</td>
+        <td>{{ total_courses }}</td>
+    </tr>
+    <tr>
+        <td>Chapitres</td>
+        <td>{{ total_chapters }}</td>
+    </tr>
+    <tr>
+        <td>Scores / Ranks</td>
+        <td>{{ total_ranks }}</td>
+    </tr>
+</table>
+
+{% endblock %}
