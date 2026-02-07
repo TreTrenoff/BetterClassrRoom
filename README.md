@@ -34,7 +34,6 @@ Objectif : dépasser les plateformes e-learning classiques grâce à :
 - Drag & drop : DnD Kit
 
 ## Infra
-- Docker
 - Nginx
 - CI/CD (GitHub Actions)
 - CDN pour assets statics
