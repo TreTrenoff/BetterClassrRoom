@@ -209,3 +209,193 @@ footer {
     font-size: .75rem;
     color: #6f7a88;
 }
+
+
+/* =========================================================
+   FORMS — Default System UI
+   ========================================================= */
+
+/* FORM WRAPPER */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* FIELD GROUP */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* LABEL */
+label {
+    font-size: .7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* INPUT / TEXTAREA / SELECT */
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.02);
+    border: 1px solid var(--line);
+
+    color: var(--ink);
+    font-size: .85rem;
+    font-family: inherit;
+
+    transition: border-color .3s, box-shadow .3s, background .3s;
+}
+
+/* PLACEHOLDER */
+input::placeholder,
+textarea::placeholder {
+    color: rgba(142,154,170,.6);
+}
+
+/* FOCUS */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(93,240,199,.03);
+    box-shadow: 0 0 0 1px rgba(93,240,199,.35);
+}
+
+/* TEXTAREA */
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* SELECT */
+select {
+    cursor: pointer;
+}
+
+/* DISABLED */
+input:disabled,
+textarea:disabled,
+select:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* ERROR STATE */
+.form-group.error input,
+.form-group.error textarea,
+.form-group.error select {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 1px rgba(255,107,107,.4);
+}
+
+.form-error {
+    font-size: .65rem;
+    color: #ff6b6b;
+    letter-spacing: .5px;
+}
+
+/* SUCCESS STATE */
+.form-group.success input,
+.form-group.success textarea,
+.form-group.success select {
+    border-color: var(--accent);
+}
+
+/* CHECKBOX / RADIO */
+input[type="checkbox"],
+input[type="radio"] {
+    width: auto;
+    accent-color: var(--accent);
+}
+
+/* =========================================================
+   BUTTONS — Unified Controls
+   ========================================================= */
+
+button,
+.btn {
+    align-self: flex-start;
+
+    padding: 14px 32px;
+    border-radius: 999px;
+
+    background: none;
+    border: 1px solid var(--accent);
+
+    color: var(--accent);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+
+    transition: color .3s, transform .3s;
+}
+
+/* BUTTON EFFECT */
+button::before,
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform .4s cubic-bezier(.2,.9,.2,1);
+    z-index: -1;
+}
+
+button:hover,
+.btn:hover {
+    color: #06080b;
+    transform: translateY(-1px);
+}
+
+button:hover::before,
+.btn:hover::before {
+    transform: translateX(0);
+}
+
+/* BUTTON SECONDARY */
+.btn-secondary {
+    border-color: var(--line);
+    color: var(--muted);
+}
+
+.btn-secondary::before {
+    background: rgba(255,255,255,.1);
+}
+
+/* FULL WIDTH BUTTON */
+.btn-full {
+    width: 100%;
+    text-align: center;
+}
+
+/* =========================================================
+   FORM LAYOUT HELPERS
+   ========================================================= */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 700px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
