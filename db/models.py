@@ -71,7 +71,7 @@ class Chapter(models.Model):
     Chapitre d'un cours, correspondant à une page HTML.
     """
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     content = models.TextField(blank=True)  # Optionnel si on utilise un fichier HTML externe
 
     created_at = models.DateTimeField(auto_now_add=True)

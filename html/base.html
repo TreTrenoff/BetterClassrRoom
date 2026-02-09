@@ -1,41 +1,144 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>BetterClassRoom</title>
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+
 <body>
 
-    <header>
+<header class="control-header">
+    <div class="header-left">
         <h1>BetterClassroom</h1>
-        <nav>
-            <a href="/">Accueil</a>
-            <a href="/course/list/">Les Cours</a>
-            {% if user.is_authenticated %}
-                <a href="/dashboard">Mon Profil</a>
-                {% if user.is_superuser %}
-                    <a href="/admin/dashboard">Admin</a>
-                {% endif %}
-                <a href="/logout">Se déconnecter</a>
-            {% else %}
-                <a href="/login">Se connecter</a>
-                <a href="/register">S’inscrire</a>
+        <span class="system-tag">Knowledge Engine v1.0</span>
+    </div>
+
+    <nav class="header-nav">
+        <a href="/">Accueil</a>
+        <a href="/course/list/">Cours</a>
+        {% if user.is_authenticated %}
+            <a href="/dashboard">Profil</a>
+            {% if user.is_superuser %}
+                <a href="/admin/dashboard">Admin</a>
             {% endif %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </nav>
 
-        </nav>
-    </header>
+    <div class="header-right">
+        <span class="status-dot"></span>
+        <span class="status-text">ONLINE</span>
+        <span class="clock" id="clock"></span>
+    </div>
+</header>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+<!-- COMMAND PALETTE -->
+<div class="command-palette" id="cmd">
+    <div class="cmd-box">
+        <span class="cmd-label">SYSTEM COMMAND</span>
+        <div class="cmd-output" id="cmdOutput"></div>
+        <input type="text" id="cmdInput" placeholder="> help" autocomplete="off" />
+        <p class="cmd-hint">Ctrl + K — ESC pour fermer | ↑ / ↓ pour l'historique</p>
+    </div>
+</div>
 
-    <footer>
-        © 2026
-    </footer>
+<main>
+    {% block content %}{% endblock %}
+</main>
 
+<footer>
+    <p>BetterClassroom ©2026</p>
+</footer>
+
+<script>
+// ---------------- CLOCK ----------------
+function updateClock() {
+    const el = document.getElementById("clock");
+    if (!el) return;
+    el.textContent = new Date().toLocaleTimeString("fr-FR");
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ---------------- COMMAND PALETTE ----------------
+const cmd = document.getElementById("cmd");
+const input = document.getElementById("cmdInput");
+const output = document.getElementById("cmdOutput");
+let history = [];
+let histIndex = -1;
+
+document.addEventListener("keydown", e => {
+    // OPEN / CLOSE
+    if (e.ctrlKey && e.key === "k") {
+        e.preventDefault();
+        cmd.classList.toggle("open");
+        input.focus();
+    }
+    if (e.key === "Escape") cmd.classList.remove("open");
+
+    // HISTORY NAVIGATION
+    if (cmd.classList.contains("open") && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        if (e.key === "ArrowUp") {
+            histIndex = Math.max(histIndex - 1, 0);
+        } else {
+            histIndex = Math.min(histIndex + 1, history.length - 1);
+        }
+        input.value = history[histIndex] || "";
+        e.preventDefault();
+    }
+});
+
+// COMMAND HANDLER
+input.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+        const val = input.value.trim();
+        if (!val) return;
+        history.push(val);
+        histIndex = history.length;
+        runCommand(val);
+        input.value = "";
+    }
+});
+
+function runCommand(cmdStr) {
+    let response = "";
+    switch(cmdStr.toLowerCase()) {
+        case "help":
+            response = "Available commands: help | cours | profil | settings | clear";
+            break;
+        case "cours":
+            response = "SYSTEM: Opening course list...";
+            window.location.href = "/course/list/";
+            break;
+        case "profil":
+            response = "SYSTEM: Redirecting to your profile...";
+            window.location.href = "/dashboard";
+            break;
+        case "settings":
+            response = "SYSTEM: Settings panel not implemented yet.";
+            break;
+        case "clear":
+            output.innerHTML = "";
+            return;
+        default:
+            response = `SYSTEM: Unknown command '${cmdStr}'. Type 'help' for commands.`;
+    }
+    appendOutput("> " + cmdStr);
+    appendOutput(response);
+}
+
+function appendOutput(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+}
+</script>
 </body>
 </html>
