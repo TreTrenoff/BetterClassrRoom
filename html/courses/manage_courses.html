@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Manage Courses</h2>
+
+<form method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search courses..." />
+    <button type="submit">Search</button>
+</form>
+
+<a href="{% url 'course_create' %}" >Create New Course</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.title }}</td>
+            <td>{{ course.description }}</td>
+            <td>
+                <a href="{% url 'course_update' course.id %}">Edit</a>
+                <button 
+                    class="btn-delete"
+                    onclick="confirmDelete('{{ course.title|escapejs }}', '{% url 'course_delete' course.id %}')">
+                    Delete
+                </button>
+                <a href="{% url 'chapter_list' course.id %}">Chapters</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No courses found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function confirmDelete(title, url) {
+
+    const input = prompt(
+        "Pour supprimer ce cours, retape exactement son titre :\n\n" + title
+    );
+
+    if (input === null) return;
+
+    if (input !== title) {
+        alert("Titre incorrect. Suppression annulée.");
+        return;
+    }
+
+    // Création d'un form POST invisible
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+
+    const csrf = document.createElement("input");
+    csrf.type = "hidden";
+    csrf.name = "csrfmiddlewaretoken";
+    csrf.value = "{{ csrf_token }}";
+
+    form.appendChild(csrf);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
+
+{% endblock %}

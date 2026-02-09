@@ -9,4 +9,4 @@ class CourseForm(forms.ModelForm):
 class ChapterForm(forms.ModelForm):
     class Meta:
         model = Chapter
-        fields = ["course", "title", "content"]
+        fields = ["title", "content"]

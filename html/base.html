@@ -3,6 +3,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <!-- Utilisation de page_title, valeur par défaut "Accueil" -->
     <title>BetterClassRoom</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
@@ -31,11 +32,17 @@
         {% endif %}
     </nav>
 
+    
+    <!-- Titre de page dynamique -->
     <div class="header-right">
         <span class="status-dot"></span>
         <span class="status-text">ONLINE</span>
         <span class="clock" id="clock"></span>
     </div>
+
+    <!-- Titre de page dynamique -->
+    <h2>{% block title %}{% endblock %}</h2>
+
 </header>
 
 <!-- COMMAND PALETTE -->
@@ -53,7 +60,8 @@
 </main>
 
 <footer>
-    <p>BetterClassroom ©2026</p>
+    <!-- Année dynamique -->
+    <p>BetterClassroom ©{{ now|date:"Y" }}</p>
 </footer>
 
 <script>
@@ -73,6 +81,7 @@ const output = document.getElementById("cmdOutput");
 let history = [];
 let histIndex = -1;
 
+// Gestion de l'ouverture/fermeture et navigation dans l'historique
 document.addEventListener("keydown", e => {
     // OPEN / CLOSE
     if (e.ctrlKey && e.key === "k") {

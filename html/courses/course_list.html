@@ -1,15 +1,29 @@
 {% extends "base.html" %}
+{% block title %}Cours{% endblock %}
 {% block content %}
 <h2>Mes Cours</h2>
-<a href="{% url 'course_create' %}">Créer un nouveau cours</a>
+
+{% if can_manage %}
+    <p>En tant qu'administrateur ou enseignant, vous pouvez gérer tous les cours.</p>
+    <a href="{% url 'course_manage' %}">Manage Courses</a>
+{% endif %}
+
 <ul>
     {% for course in courses %}
         <li>
-            {{ course.title }} - {{ course.description }} 
-            <a href="{% url 'chapter_create' course.id %}">Ajouter un chapitre</a>
+            <strong>{{ course.title }}</strong> - {{ course.description }} - {{ course.created_at|date:"Y-m-d" }}
+            - {{ course.chapters.count }} chapitre{{ course.chapters.count|pluralize }} - create by {{ course.created_by.username }}
+            
+            {% if can_manage %}
+                <!-- Admin/Teacher peut ajouter un chapitre -->
+                <a href="{% url 'chapter_create' course.id %}">Ajouter un chapitre</a>
+            {% endif %}
+
             <ul>
-                {% for chapter in course.chapters.all %}
-                    <li>{{ chapter.title }}</li>
+                {% for chapter in course.chapters.all|slice:":2" %}
+                    <li>
+                        <a href="{% url 'chapter_view' course.id chapter.id %}">{{ chapter.title }}</a>
+                    </li>
                 {% endfor %}
             </ul>
         </li>

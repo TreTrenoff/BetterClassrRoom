@@ -7,9 +7,7 @@ from db.db import DATABASES, DbConfig  # Configuration de ta base de données
 # -------------------------------------------------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # -------------------------------------------------------------------
-COURSES_ROOT = os.path.join(BASE_DIR, "courses")
 
-os.makedirs(COURSES_ROOT, exist_ok=True)
 
 # exist_ok=True = ne plante pas si déjà présent (idempotent, science propre)
 # -------------------------------------------------------------------
@@ -79,11 +77,5 @@ if not settings.configured:
             os.path.join(BASE_DIR, "static"),  # Où mettre les fichiers statiques custom (ex: default_avatar.png)
         ],
         STATIC_ROOT=os.path.join(BASE_DIR, "staticfiles"),  # Collectstatic place ici tous les fichiers
-
-        # ========================
-        # COURSES (nouveau)
-        # ========================
-        COURSES_ROOT=COURSES_ROOT,
-        COURSES_URL="/courses/",
 
     )
